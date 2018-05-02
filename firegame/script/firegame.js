@@ -115,7 +115,7 @@ stage.addChild(gym);
 
         // --- hitTest
         person.tickListener = person.on("tick", function () {
-            // Hit Test
+            // Hit test
             if ((person.y > 330) && (person.x <= person.moveToX)) {
 
                 if ((person.x > player.x+12) && (person.x < player.x+128)) {
@@ -134,7 +134,30 @@ stage.addChild(gym);
                     stage.removeChild(person);
                     score.value = 0;
                     score.text = score.value;
-                    score.cache (0,0,200,50);
+                    score.cache (0,0,200,50)
+                    stage.dispatchEvent(new createjs.Event("hitbyball"));
+                }
+                
+            }
+            
+            else if ((person.y > 325) && (person.x > person.moveToX) && (person.x <= person.moveToX + 128)) {
+                if ((person.x > player.x+12) && (person.x < player.x+128)) {
+                    stage.dispatchEvent(new createjs.Event("caughtperson"));
+                    createjs.Tween.removeTweens(person);
+                    tween = createjs.Tween.get(person)
+                            .to({x: person.moveToX + 192, 
+                                 y: STAGE_HEIGHT/2},
+                            person.moveTime/2, createjs.Ease.getPowOut(3))
+                            .to({x: person.moveToX + 280, 
+                                 y: STAGE_HEIGHT},
+                            person.moveTime/2, createjs.Ease.getPowIn(3));
+                } else {
+                    alert("Game Over")
+                    person.off("tick", person.tickListener);
+                    stage.removeChild(person);
+                    score.value = 0;
+                    score.text = score.value;
+                    score.cache (0,0,200,50)
                     stage.dispatchEvent(new createjs.Event("hitbyball"));
                 }
 
@@ -149,7 +172,7 @@ stage.addChild(gym);
 // PERSON OBJECTS
     // --- Call addBall method EVERY FRAME
     var addPerson = createjs.Ticker.on("tick", function addPerson() {
-        var randomNumber = Math.floor((Math.random() * 200) + 1);
+        var randomNumber = Math.floor((Math.random() * 250) + 1);
         if (randomNumber === 1) {
             stage.addChild(Person());
         }
